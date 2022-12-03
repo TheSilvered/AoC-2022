@@ -13,7 +13,7 @@ data '\n\n' @su.split = data
     elf_list '\n' @su.split = cals
     0 = tot
     ... Iter :: cals := meal [
-        (Int :: meal) += tot
+        Int :: meal += tot
     ]
 
     => tot

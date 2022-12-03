@@ -1,21 +1,5 @@
 |#| 'stdio.nest' = io
 |#| 'stdsutil.nest' = su
-|#| 'stdsequtil.nest' = sequ
-
--/
-Values:
-  (A, X) Rock: 1
-  (B, Y) Paper: 2
-  (C, Z) Scissors: 3
-
-  X = loose
-  Y = draw
-  Z = win
-
-  loose = 0
-  draw = 3
-  win = 6
-/-
 
 { 'A X': 4, 'A Y': 8, 'A Z': 3,
   'B X': 1, 'B Y': 5, 'B Z': 9,
