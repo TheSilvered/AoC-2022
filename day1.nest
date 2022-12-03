@@ -1,0 +1,36 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+|#| 'stdmath.nest' = math
+
+'day1.txt' 'r' @io.open = data_file
+data_file -1 @io.read = data
+data_file @io.close
+
+data '\n\n' @su.split = data
+
+#count_cals elf_list [
+    elf_list '\n' @su.split = cals
+    0 = tot
+    ... Iter :: cals := meal [
+        (Int :: meal) += tot
+    ]
+
+    => tot
+]
+
+#part_one [
+    >>> (data count_cals @sequ.map @math.max_seq '\n' ><)
+]
+
+#part_two [
+    data count_cals @sequ.map = sums
+    sums @math.max_seq = top_1
+    sums top_1 - @math.max_seq = top_2
+    sums top_2 - @math.max_seq = top_3
+
+    >>> (top_1 top_2 top_3 + '\n' ><)
+]
+
+@part_one
+@part_two

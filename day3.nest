@@ -1,0 +1,67 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day3.txt' 'r' @io.open = data_file
+data_file -1 @io.read '\n' @su.split = data
+data_file @io.close
+
+-- <{ 'vJrwpWtwJgWrhcsFMMfFFhFp',
+--    'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
+--    'PmmdzqPrVvPwwTWBwg',
+--    'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
+--    'ttgJtRGJQctTZtZT',
+--    'CrZsJsPPZsGzwwsLwLmpwMDw' }> = data
+
+(Byte :: 'A') = Ab
+(Byte :: 'a') = ab
+
+#get_score item [
+    (Byte :: item) = b
+
+    b ab >= ? => b ab - 1 +
+            : => b Ab - 27 +
+]
+
+#part_one [
+    0 = tot
+
+    ... Iter :: data := items [
+        (Array :: items) = items
+        items 0 ($items 2 /) 1 @sequ.slice = f_compartment
+        items ($items 2 /) $items 1 @sequ.slice = b_compartment
+
+        ... Iter :: f_compartment := item [
+            b_compartment item @sequ.contains ? [
+                item @get_score += tot
+                ;
+            ]
+        ]
+    ]
+    >>> tot
+    >>> '\n'
+]
+
+#part_two [
+    0 = tot
+
+    ... 3 0 -> $data := i [
+        data.(i)     = elf1
+        Array :: data.(i 1 +) = elf2
+        Array :: data.(i 2 +) = elf3
+
+        ... Iter :: elf1 := item [
+            (elf2 item @sequ.contains) \
+            (elf3 item @sequ.contains) && ? [
+                item @get_score += tot
+                ;
+            ]
+        ]
+    ]
+
+    >>> tot
+    >>> '\n'
+]
+
+@part_one
+@part_two
