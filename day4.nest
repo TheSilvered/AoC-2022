@@ -1,0 +1,47 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day4.txt' 'r' @io.open = data_file
+Array :: (data_file -1 @io.read '\n' @su.split) = data
+data_file @io.close
+
+data (##parts => Array :: (parts ',' @su.split)) @sequ.map = data
+data \
+(##parts => { Array :: (parts.0 '-' @su.split),
+              Array :: (parts.1 '-' @su.split) }) \
+@sequ.map = data
+
+... Iter :: data := parts [
+    Int :: parts.0 .0 = parts.0 .0
+    Int :: parts.0 .1 = parts.0 .1
+    Int :: parts.1 .0 = parts.1 .0
+    Int :: parts.1 .1 = parts.1 .1
+]
+
+#part_one [
+    0 = tot
+    ... Iter :: data := parts [
+        ((parts.0 .0 parts.1 .0 <=) (parts.0 .1 parts.1 .1 >=) &&) \
+        ((parts.1 .0 parts.0 .0 <=) (parts.1 .1 parts.0 .1 >=) &&) || ?
+            1 += tot
+    ]
+
+    >>> tot
+    >>> '\n'
+]
+
+#part_two [
+    0 = tot
+    ... Iter :: data := parts [
+        ((parts.0 .1 parts.1 .0 >=) (parts.0 .0 parts.1 .0 <=) &&) \
+        ((parts.1 .1 parts.0 .0 >=) (parts.1 .0 parts.0 .0 <=) &&) || ?
+            1 += tot
+    ]
+
+    >>> tot
+    >>> '\n'
+]
+
+@part_one
+@part_two

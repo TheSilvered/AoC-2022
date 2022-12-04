@@ -6,11 +6,11 @@
 data_file -1 @io.read '\n' @su.split = data
 data_file @io.close
 
-(Byte :: 'A') = Ab
-(Byte :: 'a') = ab
+Byte :: 'A' = Ab
+Byte :: 'a' = ab
 
 #get_score item [
-    (Byte :: item) = b
+    Byte :: item = b
 
     b ab >= ? => b ab - 1 +
             : => b Ab - 27 +
