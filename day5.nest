@@ -1,0 +1,73 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day5.txt' 'r' @io.open = data_file
+data_file -1 @io.read 'move ' '' @su.replace_substr \
+                      'from ' '' @su.replace_substr \
+                      'to '   '' @su.replace_substr = data
+data_file @io.close
+
+data '\n' @su.split = data
+
+data 0 8 1 @sequ.slice = stack_lines
+data 10 $data 1 @sequ.slice = moves_lines
+
+moves_lines \
+(##a => { Int :: (a ' ' @su.split = n).0,
+          Int :: n.1 1 -,
+          Int :: n.2 1 -}) \
+@sequ.map = moves
+
+-- duplicated just to have both the results
+{ null;9 } = stacks_1
+{ null;9 } = stacks_2
+
+... 0 -> 9 := stack_n [
+    <{}> = stacks_1.(stack_n)
+    <{}> = stacks_2.(stack_n)
+
+    ... 7 -> -1 := i [
+        (stack_lines.(i).(stack_n 4 * 1 +) + = char) ' ' == ? ;
+        stacks_1.(stack_n) char +
+        stacks_2.(stack_n) char +
+    ]
+]
+
+#part_one [
+    ... Iter :: moves := move [
+        stacks_1.(move.1) = from
+        stacks_1.(move.2) = to
+
+        -- pop a value from 'from' and append it to 'to'
+        ... move.0 [ to (from 1 /) + ]
+    ]
+
+    ... Iter :: stacks_1 := stack [
+        >>> stack.-1
+    ]
+    >>> '\n'
+]
+
+#part_two [
+    ... Iter :: moves := move [
+        stacks_2.(move.1) = from
+        stacks_2.(move.2) = to
+
+        -- copy the values in order from 'from' to 'to'
+        ... -:move.0 -> 0 := i [
+            to from.(i) +
+        ]
+
+        -- pop the values from 'from'
+        from move.0 /
+    ]
+
+    ... Iter :: stacks_2 := stack [
+        >>> stack.-1
+    ]
+    >>> '\n'
+]
+
+@part_one
+@part_two
