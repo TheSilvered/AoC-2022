@@ -1,0 +1,40 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day6.txt' 'r' @io.open = data_file
+data_file -1 @io.read = data
+data_file @io.close
+
+#part_one [
+    ... 3 -> $data := i [
+        (data.(i) data.(i 1 -) data.(i 2 -) data.(i 3 -) data.(i) data.(i 2 -) !=) \
+        (data.(i 1 -) data.(i 3 -) !=) && ? [
+            >>> (i 1 +)
+            >>> '\n'
+            ;
+        ]
+    ]
+]
+
+#part_two [
+    ... 13 -> $data := i [
+        false = break
+        ... i -> (i 13 -) := j [
+            ... (j 1 -) -> (i 14 -) := k [
+                data.(j) data.(k) == ? [
+                    true = break
+                    ;
+                ]
+            ]
+            break ? ;
+        ]
+        !break ? [
+            >>> (i 1 + '\n' ><)
+            ;
+        ]
+    ]
+]
+
+@part_one
+@part_two
