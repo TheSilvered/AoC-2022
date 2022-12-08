@@ -1,0 +1,120 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day8.txt' 'r' @io.open = data_file
+data_file -1 @io.read '\n' @su.split = data
+data_file @io.close
+
+data (##row => Array :: row ) @sequ.map = data
+
+... 0 -> $data := i [
+    data.(i) (##tree => Int :: tree) @sequ.map = data.(i)
+]
+
+$data.0 = w
+$data   = h
+
+#is_visible tree_x tree_y [
+    data.(tree_y).(tree_x) = tree
+
+    true = is_visible
+    -- top
+    ... 0 -> tree_y := y [
+        data.(y).(tree_x) tree >= ? [
+            false = is_visible
+            ;
+        ]
+    ]
+    is_visible ? => true
+
+    true = is_visible
+    -- bottom
+    ... tree_y 1 + -> h := y [
+        data.(y).(tree_x) tree >= ? [
+            false = is_visible
+            ;
+        ]
+    ]
+    is_visible ? => true
+
+    true = is_visible
+    -- left
+    ... 0 -> tree_x := x [
+        data.(tree_y).(x) tree >= ? [
+            false = is_visible
+            ;
+        ]
+    ]
+    is_visible ? => true
+
+    true = is_visible
+    -- right
+    ... tree_x 1 + -> w := x [
+        data.(tree_y).(x) tree >= ? [
+            false = is_visible
+            ;
+        ]
+    ]
+    => is_visible
+]
+
+#scenic_score tree_x tree_y [
+    data.(tree_y).(tree_x) = tree
+
+    0 = score_top
+    -- top
+    ... tree_y 1 - -> -1 := y [
+        1 += score_top
+        data.(y).(tree_x) tree >= ? ;
+    ]
+
+    0 = score_bottom
+    -- bottom
+    ... tree_y 1 + -> h := y [
+        1 += score_bottom
+        data.(y).(tree_x) tree >= ? ;
+    ]
+
+    0 = score_left
+    -- left
+    ... tree_x 1 - -> -1 := x [
+        1 += score_left
+        data.(tree_y).(x) tree >= ? ;
+    ]
+
+    0 = score_right
+    -- right
+    ... tree_x 1 + -> w := x [
+        1 += score_right
+        data.(tree_y).(x) tree >= ? ;
+    ]
+    => score_top score_bottom score_left score_right *
+]
+
+#part_one [
+    0 = tot
+    ... 0 -> w := x [
+        ... 0 -> h := y [
+            x y @is_visible ?
+                1 += tot
+        ]
+    ]
+    >>> tot
+    >>> '\n'
+]
+
+#part_two [
+    0 = max
+    ... 0 -> w := x [
+        ... 0 -> h := y [
+            x y @scenic_score = score
+            score max > ?
+                score = max
+        ]
+    ]
+    >>> max
+    >>> '\n'
+]
+
+@part_two
