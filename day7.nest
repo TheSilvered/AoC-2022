@@ -1,0 +1,70 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+|#| 'stditutil.nest' = itu
+|#| 'stdmath.nest' = math
+
+'day7.txt' 'r' @io.open = data_file
+data_file -1 @io.read '\n' @su.split = data
+data_file @io.close
+
+{} = root = curr_dir
+
+... Iter :: data := line [
+    line.0 '$' == ? [
+        line '$ ls' @su.starts_with ? ..
+
+        line 5 $line 1 @sequ.slice = directory
+        directory '/' == ?
+            root = curr_dir
+        : directory '..' == ?
+            curr_dir.'..' = curr_dir
+        : [
+            {} = curr_dir.(directory)
+            curr_dir = curr_dir.(directory).'..'
+            curr_dir.(directory) = curr_dir
+        ]
+        ..
+    ]
+    : line.0 == 'd' == ? ..
+
+    line ' ' @su.split = name_size
+    Int :: name_size.0 = curr_dir.(name_size.1)
+]
+
+<{}> = dir_sizes
+
+#get_size dir [
+    0 = tot
+    ... dir @itu.items := item [
+        item.0 = key
+        item.1 = value
+        key '..' == ? ..
+
+        ?::value Int == ? [
+            value += tot
+            ..
+        ]
+
+        value @get_size = new_size
+        dir_sizes new_size +
+        new_size += tot
+    ]
+    => tot
+]
+
+root @get_size = root_size
+
+#part_one [
+    >>> (dir_sizes (##size => size 100_000 <=) @sequ.filter @math.sum)
+    >>> '\n'
+]
+
+#part_two [
+    30_000_000 70_000_000 - root_size + = _globals_.min_size
+    >>> (dir_sizes (##size => size min_size >=) @sequ.filter @math.min_seq)
+    >>> '\n'
+]
+
+@part_one
+@part_two
