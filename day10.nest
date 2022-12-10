@@ -1,0 +1,80 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day10.txt' 'r' @io.open = data_file
+data_file -1 @io.read '\n' @su.split = data
+data_file @io.close
+
+... 0 -> $data := i [
+    data.(i) ' ' @su.split = data.(i)
+    $data.(i) 1 == ?
+        0 = data.(i)
+    :
+        Int :: data.(i).1 = data.(i)
+]
+
+#part_one [
+    0 = cycle_count
+    1 = reg
+
+    0 = tot
+
+    ... Iter :: data := inst [
+        1 += cycle_count
+
+        cycle_count 40 % 20 == ?
+            cycle_count reg * += tot
+
+        -- noop
+        inst 0 == ? ..
+
+        1 += cycle_count
+
+        cycle_count 40 % 20 == ?
+            cycle_count reg * += tot
+
+        inst += reg
+    ]
+
+    >>> tot
+    >>> '\n'
+]
+
+#part_two [
+    -1 = cycle_count
+    1 = reg
+
+    <{ }> = screen
+
+    ... Iter :: data := inst [
+        1 += cycle_count
+
+        -1 (cycle_count 40 % reg -) 1 <= ?
+            screen '#' +
+        :
+            screen '.' +
+
+        -- noop
+        inst 0 == ? ..
+
+        1 += cycle_count
+
+        -1 (cycle_count 40 % reg -) 1 <= ?
+            screen '#' +
+        :
+            screen '.' +
+
+        inst += reg
+    ]
+
+    ... 0 -> 6 := row [
+        ... 0 -> 40 := col [
+            >>> screen.(row 40 * col +)
+        ]
+        >>> '\n'
+    ]
+]
+
+@part_one
+@part_two
