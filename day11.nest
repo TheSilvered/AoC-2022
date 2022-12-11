@@ -1,0 +1,151 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+|#| 'stditutil.nest' = itu
+|#| 'stdsys.nest' = sys
+
+#debug_pause [
+    ?.. true [
+        <<<'Var: ' = var
+
+        var '' == ? ;
+        >>> _globals_.(var)
+        >>> '\n'
+    ]
+]
+
+'day11.txt' 'r' @io.open = data_file
+data_file -1 @io.read = data
+data_file @io.close
+
+data 'Monkey '                        '' @su.replace_substr \
+     '  Starting items: '             '' @su.replace_substr \
+     '  Operation: new = '            '' @su.replace_substr \
+     '  Test: divisible by '          '' @su.replace_substr \
+     '    If true: throw to monkey '  '' @su.replace_substr \
+     '    If false: throw to monkey ' '' @su.replace_substr \
+     ':'                              '' @su.replace_substr \
+     ','                              '' @su.replace_substr = data
+
+data '\n\n' @su.split (##a => a '\n' @su.split) @sequ.map = monkey_data
+{} = monkeys_p1
+{} = monkeys_p2
+
+#get_op op_str [
+    op_str ' ' @su.split = parts
+    parts.0 'old' == ?
+        0 = parts.0
+    :
+        Int :: parts.0 = parts.0
+
+    parts.2 'old' == ?
+        0 = parts.2
+    :
+        Int :: parts.2 = parts.2
+
+    => Array :: parts
+]
+
+1 = mult
+... Iter :: monkey_data := monkey [
+    {
+        'items': monkey.1 ' ' @su.split (##n => Int :: n) @sequ.map,
+        'op': monkey.2 @get_op,
+        'check': Int :: monkey.3,
+        'throw_true': Int :: monkey.4,
+        'throw_false': Int :: monkey.5,
+        'tot_checks': 0
+    } = monkeys_p1.(Int :: monkey.0)
+
+    {
+        'items': monkey.1 ' ' @su.split (##n => Int :: n) @sequ.map,
+        'op': monkey.2 @get_op,
+        'check': Int :: monkey.3,
+        'throw_true': Int :: monkey.4,
+        'throw_false': Int :: monkey.5,
+        'tot_checks': 0
+    } = monkeys_p2.(Int :: monkey.0)
+
+    Int :: monkey.3 *= mult
+]
+
+#get_result_p1 old op [
+    op.0 = n1
+    op.2 = n2
+
+    n1 0 == ? old = n1
+    n2 0 == ? old = n2
+
+    op.1 '+' == ?
+        => n1 n2 + 3 /
+    :
+        => n1 n2 * 3 /
+]
+
+#get_result_p2 old op [
+    op.0 = n1
+    op.2 = n2
+
+    n1 0 == ? old = n1
+    n2 0 == ? old = n2
+
+    op.1 '+' == ?
+        => n1 n2 + mult %
+    :
+        => n1 n2 * mult %
+]
+
+#make_turn monkey monkeys get_res_func [
+    ... Iter :: monkey.items := item [
+        item monkey.op @get_res_func = new_level
+        new_level monkey.check % 0 == ?
+            monkeys.(monkey.throw_true ).items new_level +
+        :
+            monkeys.(monkey.throw_false).items new_level +
+    ]
+
+    $monkey.items += monkey.tot_checks
+    monkey.items @sequ.empty
+]
+
+#make_round monkeys get_res_func [
+    ... monkeys @itu.values := monkey [
+        monkey monkeys get_res_func @make_turn
+    ]
+]
+
+#get_monkey_business monkeys [
+    0 = top_1
+    0 = top_2
+
+    ... monkeys @itu.values := monkey [
+        monkey.tot_checks top_1 > ?
+            monkey.tot_checks = top_1
+    ]
+
+    ... monkeys @itu.values := monkey [
+        top_2 monkey.tot_checks top_1 < ?
+            monkey.tot_checks = top_2
+    ]
+
+    => top_1 top_2 *
+]
+
+#part_one [
+    ... 20 [
+        monkeys_p1 get_result_p1 @make_round
+    ]
+
+    >>> ( monkeys_p1 @get_monkey_business '\n' ><)
+]
+
+#part_two [
+    ... 10_000 [
+        monkeys_p2 get_result_p2 @make_round
+    ]
+
+    >>> ( monkeys_p2 @get_monkey_business '\n' ><)
+]
+
+@part_one
+@part_two
