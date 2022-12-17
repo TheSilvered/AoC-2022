@@ -4,16 +4,6 @@
 |#| 'stditutil.nest' = itu
 |#| 'stdsys.nest' = sys
 
-#debug_pause [
-    ?.. true [
-        <<<'Var: ' = var
-
-        var '' == ? ;
-        >>> _globals_.(var)
-        >>> '\n'
-    ]
-]
-
 'day11.txt' 'r' @io.open = data_file
 data_file -1 @io.read = data
 data_file @io.close
