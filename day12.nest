@@ -1,0 +1,87 @@
+|#| 'stdio.nest' = io
+|#| 'stdsutil.nest' = su
+|#| 'stdsequtil.nest' = sequ
+
+'day12.txt' 'r' @io.open = data_file
+data_file -1 @io.read = data
+data_file @io.close
+
+data '\n' @su.split = data
+data (##row => Iter :: row @sequ.from_iter) @sequ.map = data
+<{}> = h_map
+
+Byte :: 'a' = b_a
+
+... Iter :: data := row [
+    h_map (row (##char =>   char 'S' == ? 0
+                          : char 'E' == ? 25
+                          : Int :: (Byte :: char) b_a -) @sequ.map) +
+]
+
+#bfs nodes [
+    sequ.remove_at = remove_at
+    {} = visited_nodes
+
+    ?.. nodes [
+        -- remove from the front
+        nodes 0 @remove_at = node
+        data.(node.1).(node.0) 'E' == ?
+            => node.2
+        visited_nodes.(node.0 ';' node.1 ><) ?
+            ..
+        -- >>> nodes
+        true = visited_nodes.(node.0 ';' node.1 ><)
+        h_map.(node.1).(node.0) = curr_height
+
+        node.1 1 - = r
+        node.0 = c
+        -- >>> { r, c }
+        0 r $data < (h_map.(r).(c) curr_height - 1 5 <=) && ?
+            nodes { c, r, node.2 1 + } +
+
+        2 += r
+        -- >>> { r, c }
+        0 r $data < (h_map.(r).(c) curr_height - 1 5 <=) && ?
+            nodes { c, r, node.2 1 + } +
+
+        1 -= r
+        1 += c
+        -- >>> { r, c }
+        0 c $data.0 < (h_map.(r).(c) curr_height - 1 5 <=) && ?
+            nodes { c, r, node.2 1 + } +
+
+        2 -= c
+        -- >>> { r, c }
+        0 c $data.0 < (h_map.(r).(c) curr_height - 1 5 <=) && ?
+            nodes { c, r, node.2 1 + } +
+        -- >>> '\n'
+    ]
+]
+
+#part_one [
+    ... 0 -> $data := row [
+        ... 0 -> $data.0 := col [
+            data.(row).(col) 'S' == ? [
+                { col, row, 0 } = start
+                ;
+            ]
+        ]
+    ]
+    >>> (<{ start }> @bfs '\n' ><)
+]
+
+#part_two [
+    <{}> = starts
+    ... 0 -> $h_map := row [
+        ... 0 -> $h_map.0 := col [
+            h_map.(row).(col) 0 == ? [
+                starts { col, row, 0 } +
+            ]
+        ]
+    ]
+
+    >>> (starts @bfs '\n' ><)
+]
+
+@part_one
+@part_two
