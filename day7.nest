@@ -56,7 +56,7 @@ data_file @io.close
 root @get_size = root_size
 
 #part_one [
-    >>> (dir_sizes (##size => size 100_000 <=) @sequ.filter @math.sum)
+    >>> (dir_sizes (##size => size 100_000 <=) @sequ.filter @math.sum_seq)
     >>> '\n'
 ]
 
