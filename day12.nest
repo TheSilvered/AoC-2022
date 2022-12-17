@@ -29,32 +29,27 @@ Byte :: 'a' = b_a
             => node.2
         visited_nodes.(node.0 ';' node.1 ><) ?
             ..
-        -- >>> nodes
+
         true = visited_nodes.(node.0 ';' node.1 ><)
         h_map.(node.1).(node.0) = curr_height
 
         node.1 1 - = r
         node.0 = c
-        -- >>> { r, c }
         0 r $data < (h_map.(r).(c) curr_height - 1 5 <=) && ?
             nodes { c, r, node.2 1 + } +
 
         2 += r
-        -- >>> { r, c }
         0 r $data < (h_map.(r).(c) curr_height - 1 5 <=) && ?
             nodes { c, r, node.2 1 + } +
 
         1 -= r
         1 += c
-        -- >>> { r, c }
         0 c $data.0 < (h_map.(r).(c) curr_height - 1 5 <=) && ?
             nodes { c, r, node.2 1 + } +
 
         2 -= c
-        -- >>> { r, c }
         0 c $data.0 < (h_map.(r).(c) curr_height - 1 5 <=) && ?
             nodes { c, r, node.2 1 + } +
-        -- >>> '\n'
     ]
 ]
 
